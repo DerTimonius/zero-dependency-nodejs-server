@@ -1,0 +1,3 @@
+Yay, your test worked!
+
+Does that mean, that my test worked as well?
