@@ -1,41 +1,35 @@
-/* import fs from 'node:fs';
-import http from 'http'; */
+import fs from 'node:fs';
+import http from 'node:http';
 
-const fs = require('node:fs');
-const http = require('http');
 const root = './public';
-const filesInRoot = fs.readdirSync(root);
-
-function parseURL(response, url) {
-  let file = root + url;
-  let content = { 'Content-Type': 'text/plain' };
-  if (url == '/') {
-    content['Content-Type'] = 'text/html';
-    file = root + '/index.html';
-  } else if (url.endsWith('.html')) {
-    content['Content-Type'] = 'text/html';
-  } else if (url.endsWith('css')) {
-    content['Content-Type'] = 'text/css';
-  } else if (url.endsWith('jpeg')) {
-    content['Content-Type'] = 'image/jpeg';
-  } else if (url.endsWith('.ico')) {
-    content['Content-Type'] = 'image/x-icon';
-  } else {
-    file += '.txt';
-  }
-  const res = response.writeHead(200, content);
-  const output = { res: res, file: file };
-  return output;
-}
-
-let server = http.createServer((request, response) => {
-  if (response.statusCode === 200) {
-    const output = parseURL(response, request.url);
-    output.res;
-    fs.createReadStream(output.file).pipe(response);
+const server = http.createServer((request, response) => {
+  if (request.url === '/' || request.url === '/index.html') {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    fs.createReadStream(root + '/index.html').pipe(response);
+  } else if (request.url === '/index.css') {
+    response.writeHead(200, { 'Content-Type': 'text/css' });
+    fs.createReadStream(root + '/index.css').pipe(response);
+  } else if (request.url === '/hero.jpeg') {
+    response.writeHead(200, { 'Content-Type': 'image/jpeg' });
+    fs.createReadStream(root + '/her.jpeg').pipe(response);
+  } else if (request.url === '/lorem-ipsum') {
+    response.writeHead(200, { 'Content-Type': 'text/plain' });
+    fs.createReadStream(root + '/lorem-ipsum.txt').pipe(response);
+  } else if (request.url === '/memes' || request.url === '/memes/index.htm') {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    fs.createReadStream(root + '/memes/index.htm').pipe(response);
+  } else if (request.url === '/memes/meme.jpg') {
+    response.writeHead(200, { 'Content-Type': 'image/jpeg' });
+    fs.createReadStream(root + '/memes/meme.jpg').pipe(response);
+  } else if (request.url === '/test') {
+    response.writeHead(200, { 'Content-Type': 'text/plain' });
+    fs.createReadStream(root + '/test.txt').pipe(response);
+  } else if (request.url === '/another-test') {
+    response.writeHead(200, { 'Content-Type': 'text/plain' });
+    fs.createReadStream(root + '/another-test.txt').pipe(response);
   } else {
     response.writeHead(404, { 'Content-Type': 'text/html' });
-    fs.createReadStream(root + '404.html').pipe(response);
+    fs.createReadStream(root + '/404.html').pipe(response);
   }
   console.log('request was made: ' + request.url);
 });
